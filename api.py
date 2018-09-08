@@ -24,6 +24,11 @@ async def fetch(session, url):
                 raise HTTPNotFound()
             return await response.read()
 
+def convertImage(imgData1):
+    imgstr = re.search(b'data:image/png;base64,(.*)', imgData1).group(1)
+    with open('output.png', 'wb') as output:
+        output.write(base64.b64decode(imgstr))        
+        
 class API(web.View):
     async def post(self):
         request = self.request
@@ -40,12 +45,6 @@ class API(web.View):
                 raise HTTPUnsupportedMediaType(text="Invalid image")
             else:
                 raise e
-                
-def convertImage(imgData1):
-    imgstr = re.search(b'data:image/png;base64,(.*)', imgData1).group(1)
-    with open('output.png', 'wb') as output:
-        output.write(base64.b64decode(imgstr))
-
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 session = aiohttp.ClientSession()
