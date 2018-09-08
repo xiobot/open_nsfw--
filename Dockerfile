@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /opt/open_nsfw--
 
 RUN git clone https://github.com/xiobot/open_nsfw--.git /opt/open_nsfw-- \
- && git checkout master
+ && git pull origin master
 
 RUN pip3 install -r requirements.txt
 
