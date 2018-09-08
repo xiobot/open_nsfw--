@@ -3,6 +3,7 @@ import base64
 import aiohttp
 import async_timeout
 import numpy as np
+import re
 import uvloop
 from aiohttp import web
 from aiohttp.web import HTTPBadRequest, HTTPNotFound, HTTPUnsupportedMediaType
