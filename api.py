@@ -29,7 +29,7 @@ class API(web.View):
         request = self.request
         data = await request.post()
         try:
-            image = base64.b64encode(b  data["url"])
+            image = convertImagedata(["url"])
             nsfw_prob = classify(image)
             text = nsfw_prob.astype(str)
             return web.Response(text=text)
@@ -40,6 +40,11 @@ class API(web.View):
                 raise HTTPUnsupportedMediaType(text="Invalid image")
             else:
                 raise e
+                
+def convertImage(imgData1):
+    imgstr = re.search(b'data:image/png;base64,(.*)', imgData1).group(1)
+    with open('output.png', 'wb') as output:
+        output.write(base64.b64decode(imgstr))
 
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
