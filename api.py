@@ -29,7 +29,7 @@ class API(web.View):
         request = self.request
         data = await request.post()
         try:
-            image = await fetch(session, data["url"])
+            image = data["url"]
             nsfw_prob = classify(image)
             text = nsfw_prob.astype(str)
             return web.Response(text=text)
