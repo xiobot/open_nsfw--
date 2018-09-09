@@ -7,12 +7,13 @@ import re
 import uvloop
 from aiohttp import web
 from aiohttp.web import HTTPBadRequest, HTTPNotFound, HTTPUnsupportedMediaType
-
 from classify_nsfw import caffe_preprocess_and_compute, load_model
 
+from PIL import Image
+from io import BytesIO
+import base64
 
 nsfw_net, caffe_transformer = load_model()
-
 
 def classify(image: bytes) -> np.float64:
     scores = caffe_preprocess_and_compute(image, caffe_transformer=caffe_transformer, caffe_net=nsfw_net, output_layers=["prob"])
@@ -24,18 +25,14 @@ async def fetch(session, url):
             if response.status == 404:
                 raise HTTPNotFound()
             return await response.read()
-
-def convertImage(imgData1):
-    imgstr = re.search(b'data:image/png;base64,(.*)', imgData1).group(1)
-    with open('output.png', 'wb') as output:
-        output.write(base64.b64decode(imgstr))        
         
 class API(web.View):
     async def post(self):
         request = self.request
         data = await request.post()
         try:
-            image = convertImage(data["url"])
+            image_data = data["url"].split(',')[1]
+            image = Image.open(BytesIO(base64.b64decode(image_data)))
             nsfw_prob = classify(image)
             text = nsfw_prob.astype(str)
             return web.Response(text=text)
