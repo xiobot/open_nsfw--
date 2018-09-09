@@ -31,7 +31,8 @@ class API(web.View):
         request = self.request
         data = await request.post()
         try:
-            image_data = data["url"].split(',')[1]
+            print("SCANNING IMAGE::::"+data["url"])
+            image_data = str(data["url"]).split(",")[1]
             image = Image.open(BytesIO(base64.b64decode(image_data)))
             nsfw_prob = classify(image)
             text = nsfw_prob.astype(str)
