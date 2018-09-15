@@ -1,6 +1,7 @@
 import asyncio
 
 import aiohttp
+import base64
 import async_timeout
 import numpy as np
 import uvloop
@@ -29,7 +30,7 @@ class API(web.View):
         request = self.request
         data = await request.post()
         try:
-            image = await fetch(session, data["url"])
+            image = base64.decodestring(data["url"])
             nsfw_prob = classify(image)
             text = nsfw_prob.astype(str)
             return web.Response(text=text)
