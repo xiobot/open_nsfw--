@@ -1,5 +1,7 @@
 from PIL import Image
 import base64
+from io import StringIO
+import io
 
 import asyncio
 import aiohttp
